@@ -13,3 +13,18 @@ Run database migrations
 OR: Manual setup
 If you prefer to do it manually:
 # 1. Create virtual environmentpython3 -m venv venv# 2. Activate itsource venv/bin/activate# 3. Install dependenciespip install -r requirements.txt# 4. Create .env filecp .env.example .env# 5. Run migrationspython manage.py migrate# 6. Start the serverpython manage.py runserver
+
+
+
+How to run the migrations :
+
+docker compose -f compose.yml exec taskmaestro python manage.py makemigrations && docker compose -f compose.yml exec taskmaestro python manage.py migrate
+
+
+
+How to see the logs:
+
+docker compose -f compose.yml logs taskmaestro 
+
+
+
