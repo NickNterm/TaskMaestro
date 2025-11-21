@@ -1,0 +1,94 @@
+services:
+  db:
+    image: postgres:17
+    restart: always
+    ports:
+      - "3333:5432"
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  taskmaestro:
+    image: ${REGISTRY_URL:-registry.example.com}/taskmaestro:latest
+    restart: always
+    container_name: taskmaestro-backend
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SMTP1: ${SMTP1}
+      PORT1: ${PORT1}
+      EMAIL1: ${EMAIL1}
+      PASSWORD1: ${PASSWORD1}
+      SMTP2: ${SMTP2}
+      PORT2: ${PORT2}
+      EMAIL2: ${EMAIL2}
+      PASSWORD2: ${PASSWORD2}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG:-False}
+      DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL:-WARNING}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DATABASE_ENGINE: ${DATABASE_ENGINE:-django.db.backends.postgresql}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST:-db}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+    env_file:
+      - .env
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - /srv/staticfiles/:/app/staticfiles
+      - /srv/media:/app/media
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=UTC
+      - REPO_USER=${REGISTRY_USERNAME}
+      - REPO_PASS=${REGISTRY_PASSWORD}
+      - REPO_URL=${REGISTRY_URL:-registry.example.com}
+    command: >
+      --cleanup
+      --interval 300
+      --label-enable
+      --rolling-restart
+      taskmaestro-backend
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
+

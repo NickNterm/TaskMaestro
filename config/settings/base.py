@@ -13,11 +13,14 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-# Read .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# Read .env file (if it exists)
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+# Support both DJANGO_SECRET_KEY (Docker) and SECRET_KEY (.env)
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or env('SECRET_KEY', default='django-insecure-change-this-in-production')
 
 # Application definition
 INSTALLED_APPS = [
@@ -71,9 +74,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
-}
+# Support both DATABASE_URL (.env) and individual DATABASE_* variables (Docker)
+if os.environ.get('DATABASE_NAME'):
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.environ.get('DATABASE_NAME'),
+            'USER': os.environ.get('DATABASE_USERNAME'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+            'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+            'PORT': os.environ.get('DATABASE_PORT', '5432'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -150,7 +166,7 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localho
 CORS_ALLOW_CREDENTIALS = True
 
 # Redis configuration
-REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/0')
+REDIS_URL = os.environ.get('REDIS_URL') or env('REDIS_URL', default='redis://localhost:6379/0')
 
 # Cache configuration
 CACHES = {
@@ -168,12 +184,13 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
 
 # Email configuration
-EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = env('EMAIL_HOST', default='')
-EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+# Support both .env format and Docker environment variables
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND') or env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.environ.get('SMTP1') or os.environ.get('EMAIL_HOST') or env('EMAIL_HOST', default='')
+EMAIL_PORT = int(os.environ.get('PORT1') or os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_USER = os.environ.get('EMAIL1') or os.environ.get('EMAIL_HOST_USER') or env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD1') or os.environ.get('EMAIL_HOST_PASSWORD') or env('EMAIL_HOST_PASSWORD', default='')
 
 # Security settings (override in production)
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)

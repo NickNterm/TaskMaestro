@@ -13,8 +13,31 @@ A production-ready Django REST Framework backend with Swagger documentation.
 - ✅ Celery ready
 - ✅ WhiteNoise for static files
 - ✅ Comprehensive logging
+- ✅ Docker & Docker Compose support
+- ✅ Easy local development and production deployment
 
 ## Quick Start
+
+### Option 1: Docker (Recommended)
+
+1. **Create `.env` file:**
+   ```bash
+   # Create .env file manually with required variables (see DOCKER.md)
+   ```
+
+2. **Start services:**
+   ```bash
+   docker compose up --build
+   ```
+
+3. **Access the application:**
+   - API: http://localhost:8000/api/
+   - Swagger: http://localhost:8000/api/docs/
+   - Admin: http://localhost:8000/admin/
+
+See [DOCKER.md](DOCKER.md) for detailed Docker instructions.
+
+### Option 2: Local Development
 
 ### 1. Create Virtual Environment
 
@@ -85,9 +108,16 @@ TaskMaestro/
 │   └── admin.py           # Admin configuration
 ├── .env                    # Environment variables (not in git)
 ├── .env.example            # Environment variables template
+├── Dockerfile              # Docker image definition
+├── compose.yml             # Docker Compose for development
+├── compose-deployment.yml  # Docker Compose for production
+├── scripts/                # Docker run scripts
+│   ├── run.sh             # Production run script
+│   └── rundev.sh          # Development run script
 ├── requirements.txt        # Python dependencies
 ├── manage.py               # Django management script
-└── README.md              # This file
+├── README.md              # This file
+└── DOCKER.md              # Docker deployment guide
 ```
 
 ## Environment Variables
