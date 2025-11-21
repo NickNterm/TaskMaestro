@@ -1,0 +1,15 @@
+Step 1: Create the .env file
+The .env file wasn't created automatically. Create it from the example:
+cp .env.example .env
+Step 2: Run the setup script (recommended)
+The setup script handles everything:
+./setup.sh
+This will:
+Create a virtual environment
+Install dependencies
+Create the .env file (if missing)
+Create necessary directories
+Run database migrations
+OR: Manual setup
+If you prefer to do it manually:
+# 1. Create virtual environmentpython3 -m venv venv# 2. Activate itsource venv/bin/activate# 3. Install dependenciespip install -r requirements.txt# 4. Create .env filecp .env.example .env# 5. Run migrationspython manage.py migrate# 6. Start the serverpython manage.py runserver
