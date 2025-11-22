@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskMaestro{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar" id="mainNavbar" style="display: none;">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>📋 TaskMaestro</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                <button id="logoutBtn" class="btn btn-outline">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    {% load static %}
+    <script src="{% static 'js/api.js' %}"></script>
+    <script src="{% static 'js/auth.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Show navbar if authenticated (JWT check)
+        if (TokenManager && TokenManager.isAuthenticated()) {
+            const navbar = document.getElementById('mainNavbar');
+            if (navbar) navbar.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

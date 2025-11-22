@@ -14,8 +14,9 @@ class KindReminderAdmin(admin.ModelAdmin):
 
 @admin.register(deadlines)
 class DeadlinesAdmin(admin.ModelAdmin):
-    list_display = ['id', 'start_date', 'end_date', 'remind_me_at', 'status']
+    list_display = ['id', 'name', 'start_date', 'end_date', 'remind_me_at', 'status']
     list_filter = ['status', 'start_date', 'end_date']
+    search_fields = ['name']
     date_hierarchy = 'start_date'
 
 
@@ -28,7 +29,7 @@ class DailyTasksAdmin(admin.ModelAdmin):
 
 @admin.register(SpecialDays)
 class SpecialDaysAdmin(admin.ModelAdmin):
-    list_display = ['id', 'description', 'datetime']
-    list_filter = ['datetime']
+    list_display = ['id', 'description', 'is_duration', 'datetime', 'start_date', 'end_date']
+    list_filter = ['is_duration', 'datetime', 'start_date']
     search_fields = ['description']
     date_hierarchy = 'datetime'

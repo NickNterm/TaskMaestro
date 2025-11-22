@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - TaskMaestro{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-header">
+            <h2>My Tasks</h2>
+            <button id="newTaskBtn" class="btn btn-primary">+ New Task</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="daily">Daily Tasks</button>
+            <button class="tab-btn" data-tab="deadlines">Deadlines</button>
+            <button class="tab-btn" data-tab="reminders">Reminders</button>
+            <button class="tab-btn" data-tab="special">Special Days</button>
+        </div>
+
+        <div class="tab-content active" id="daily-tab">
+            <div class="tasks-grid" id="daily-tasks-list">
+                <!-- Tasks will be loaded here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="deadlines-tab">
+            <div class="tasks-grid" id="deadlines-list">
+                <!-- Deadlines will be loaded here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="reminders-tab">
+            <div class="tasks-grid" id="reminders-list">
+                <!-- Reminders will be loaded here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="special-tab">
+            <div class="tasks-grid" id="special-days-list">
+                <!-- Special days will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Modal -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">New Task</h3>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <form id="taskForm" class="modal-body">
+            <input type="hidden" id="taskId" name="id">
+            <input type="hidden" id="taskType" name="type">
+            
+            <div id="daily-task-fields">
+                <div class="form-group">
+                    <label for="task-text">Task Text</label>
+                    <textarea id="task-text" name="text" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div id="deadline-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="deadline-name">Deadline Name</label>
+                    <input type="text" id="deadline-name" name="name" placeholder="Enter deadline name">
+                </div>
+                <div class="form-group">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="start-date" name="start_date">
+                </div>
+                <div class="form-group">
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="end-date" name="end_date">
+                </div>
+                <div class="form-group">
+                    <label for="remind-me-at">Remind Me At</label>
+                    <input type="datetime-local" id="remind-me-at" name="remind_me_at">
+                </div>
+            </div>
+
+            <div id="reminder-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="reminder-name">Reminder Name</label>
+                    <input type="text" id="reminder-name" name="name">
+                </div>
+            </div>
+
+            <div id="special-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="is-duration" name="is_duration">
+                        Duration (date range)
+                    </label>
+                </div>
+                <div id="single-day-fields">
+                    <div class="form-group">
+                        <label for="special-datetime">Date</label>
+                        <input type="date" id="special-datetime" name="datetime">
+                    </div>
+                </div>
+                <div id="duration-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="special-start-date">Start Date</label>
+                        <input type="date" id="special-start-date" name="start_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="special-end-date">End Date</label>
+                        <input type="date" id="special-end-date" name="end_date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/tasks.js' %}"></script>
+{% endblock %}
+
