@@ -9,29 +9,29 @@ from .models import KindReminder, deadlines, DailyTasks, SpecialDays
 class KindReminderSerializer(serializers.ModelSerializer):
     class Meta:
         model = KindReminder
-        fields = ['id', 'name', 'status']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'status', 'user']
+        read_only_fields = ['id', 'user']
 
 
 class DeadlinesSerializer(serializers.ModelSerializer):
     class Meta:
         model = deadlines
-        fields = ['id', 'name', 'start_date', 'end_date', 'remind_me_at', 'status']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'start_date', 'end_date', 'remind_me_at', 'status', 'user']
+        read_only_fields = ['id', 'user']
 
 
 class DailyTasksSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyTasks
-        fields = ['id', 'text', 'status']
-        read_only_fields = ['id']
+        fields = ['id', 'text', 'status', 'user']
+        read_only_fields = ['id', 'user']
 
 
 class SpecialDaysSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpecialDays
-        fields = ['id', 'description', 'is_duration', 'datetime', 'start_date', 'end_date']
-        read_only_fields = ['id']
+        fields = ['id', 'description', 'is_duration', 'datetime', 'start_date', 'end_date', 'user']
+        read_only_fields = ['id', 'user']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

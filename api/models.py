@@ -2,6 +2,7 @@
 API Models
 """
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Status(models.TextChoices):
@@ -12,6 +13,7 @@ class Status(models.TextChoices):
 
 
 class KindReminder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='kind_reminders', null=True, blank=True)
     name = models.CharField(max_length=100)
     status = models.CharField(max_length=100,choices=Status.choices,default=Status.PENDING)
 
@@ -24,6 +26,7 @@ class KindReminder(models.Model):
 
 
 class deadlines(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='deadlines', null=True, blank=True)
     name = models.CharField(max_length=200)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -40,6 +43,7 @@ class deadlines(models.Model):
 
 
 class DailyTasks(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_tasks', null=True, blank=True)
     text = models.TextField()
     status = models.CharField(max_length=100,choices=Status.choices,default=Status.PENDING)
 
@@ -52,6 +56,7 @@ class DailyTasks(models.Model):
 
 
 class SpecialDays(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='special_days', null=True, blank=True)
     description = models.TextField()
     is_duration = models.BooleanField(default=False, help_text="True for date range, False for single day")
     datetime = models.DateField(null=True, blank=True, help_text="Single day date (when is_duration=False)")

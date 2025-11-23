@@ -65,43 +65,79 @@ class UserRegistrationView(APIView):
 
 # KindReminder Views
 class KindReminderListCreateView(ListCreateAPIView):
-    queryset = KindReminder.objects.all()
     serializer_class = KindReminderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return KindReminder.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class KindReminderDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = KindReminder.objects.all()
     serializer_class = KindReminderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return KindReminder.objects.filter(user=self.request.user)
 
 
 # Deadlines Views
 class DeadlinesListCreateView(ListCreateAPIView):
-    queryset = deadlines.objects.all()
     serializer_class = DeadlinesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return deadlines.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class DeadlinesDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = deadlines.objects.all()
     serializer_class = DeadlinesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return deadlines.objects.filter(user=self.request.user)
 
 
 # DailyTasks Views
 class DailyTasksListCreateView(ListCreateAPIView):
-    queryset = DailyTasks.objects.all()
     serializer_class = DailyTasksSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return DailyTasks.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class DailyTasksDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = DailyTasks.objects.all()
     serializer_class = DailyTasksSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return DailyTasks.objects.filter(user=self.request.user)
 
 
 # SpecialDays Views
 class SpecialDaysListCreateView(ListCreateAPIView):
-    queryset = SpecialDays.objects.all()
     serializer_class = SpecialDaysSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return SpecialDays.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class SpecialDaysDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = SpecialDays.objects.all()
     serializer_class = SpecialDaysSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return SpecialDays.objects.filter(user=self.request.user)
